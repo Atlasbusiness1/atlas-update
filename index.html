@@ -845,7 +845,7 @@ async function fetchWorkoutTip(summary,workoutName){
     const res=await fetch('/api/chat',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-6',max_tokens:250,
+        model:'claude-sonnet-4-5-20251001',max_tokens:250,
         messages:[{role:'user',content:
           'Du er en elite styrketræningscoach. Analyser denne træningssession og giv ét konkret råd til næste træning.\n\n'+
           'Træning: '+workoutName+'\nMål: '+PROF.goal+'\n\nØvelser i dag:\n'+lines+'\n\n'+
@@ -1149,7 +1149,7 @@ async function analyzePhoto(mealId,dataUrl){
     const res=await fetch('/api/chat',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-6',max_tokens:300,
+        model:'claude-sonnet-4-5-20251001',max_tokens:300,
         messages:[{role:'user',content:[
           {type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},
           {type:'text',text:'Du er ernæringsekspert. Estimer makroer for dette måltid. Forventet: '+(meal?meal.name+' ca. '+meal.kcal+' kcal':'ukendt')+'. Svar KUN JSON: {"kcal":0,"p":0,"c":0,"f":0,"note":"beskrivelse"} Ingen markdown.'}
@@ -1704,7 +1704,7 @@ Regler:
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: 'claude-sonnet-4-5-20251001',
         max_tokens: 4000,
         messages: [{role: 'user', content: prompt}]
       })
@@ -2088,14 +2088,9 @@ async function sendAIMsg() {
   try {
     const res = await fetch('/api/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': getApiKey(),
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: 'claude-sonnet-4-5-20251001',
         max_tokens: 1500,
         system: buildSystemPrompt(),
         messages: aiHistory
@@ -2246,7 +2241,7 @@ async function sendHomeCoach() {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: 'claude-sonnet-4-5-20251001',
         max_tokens: 400,
         system: buildHomeCoachPrompt(),
         messages: homeCoachHistory
