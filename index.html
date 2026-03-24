@@ -733,6 +733,7 @@ function showScreen(id){
   if(id==='meals') renderMeals();
   if(id==='progress') renderProgress();
   if(id==='settings') renderSettings();
+  if(id==='ai') initAI();
 }
 
 // ══════════════════════════════════════════════
@@ -1842,8 +1843,7 @@ function buildProgressContext(){
   return lines.length?lines.join('\n'):'Ingen træningsdata endnu.';
 }
 
-// ══════════════════════════════════════════════
-// AI COACH
+
 // ══════════════════════════════════════════════
 
 // ══════════════════════════════════════════════
@@ -1907,20 +1907,7 @@ function showToast(msg,type){const t=document.getElementById('toast');t.textCont
 
 
 
-function buildProgressContext(){
-  const lines=[];
-  Object.entries(logs).forEach(([id,sessions])=>{
-    if(!sessions.length)return;
-    const recent=sessions.slice(-3);
-    const name=getExName(id);
-    const str=recent.map(s=>{
-      const top=s.sets?.reduce((b,st)=>st.weight>(b.weight||0)?st:b,{});
-      return top?.weight?s.date+': '+top.weight+'kg x'+top.reps:'';
-    }).filter(Boolean).join(' → ');
-    if(str)lines.push(name+': '+str);
-  });
-  return lines.length?lines.join('\n'):'Ingen træningsdata endnu.';
-}
+
 
 // ══════════════════════════════════════════════
 // AI COACH
