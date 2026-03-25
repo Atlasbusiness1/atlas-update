@@ -553,14 +553,7 @@ canvas{width:100%!important}
           <div class="ss" id="ai-status">Din personlige træner</div>
         </div>
       </div>
-      <div id="ai-key-section" style="display:none">
-        <div class="ai-key-wrap">
-          <div class="ai-key-title">API Nøgle Påkrævet</div>
-          <div class="ai-key-sub">Indtast din Anthropic API nøgle for at aktivere AI Coach. Nøglen gemmes kun lokalt på din enhed og sendes aldrig videre.</div>
-          <input class="ai-key-inp" id="ai-key-inp" type="password" placeholder="sk-ant-...">
-          <button class="ai-key-btn" onclick="saveApiKey()">Aktivér AI Coach</button>
-        </div>
-      </div>
+      <div id="ai-key-section" style="display:none"></div>
       <div id="ai-chat-section" style="display:none">
         <div class="ai-wrap">
           <div class="ai-msgs" id="ai-msgs"></div>
@@ -711,6 +704,8 @@ let {WD,MEALS,PROF}=loadState();
 let logs=JSON.parse(localStorage.getItem('atlasLogs')||'{}');
 let done=JSON.parse(localStorage.getItem('atlasDone')||'[]');
 let aw=null,ti=null,ts=0,aiHist=[];
+let aiHistory=[], aiInitialized=false;
+let homeCoachHistory=[], homeCoachReady=false;
 let esMode=null,esTarget=null;
 
 function saveWD(){localStorage.setItem('atlasWD',JSON.stringify(WD));}
@@ -1921,9 +1916,6 @@ const AI_CHIPS = [
   '❓ Hvad skal jeg spise pre-workout?',
 ];
 
-let aiHistory = [];
-let aiInitialized = false;
-
 function getApiKey() {
   return localStorage.getItem('atlasApiKey') || '';
 }
@@ -1998,9 +1990,13 @@ ${buildDailyFoodContext()}`;
 }
 
 function initAI() {
+  // Hide key section — API key is server-side
   const keySection = document.getElementById('ai-key-section');
-  const chatSection = document.getElementById('ai-chat-section');
   if (keySection) keySection.style.display = 'none';
+
+  // Show chat section
+  const chatSection = document.getElementById('ai-chat-section');
+  if (!chatSection) return;
   chatSection.style.display = 'block';
 
   if (!aiInitialized) {
@@ -2008,8 +2004,7 @@ function initAI() {
     aiHistory = [];
     renderAIMsgs();
     renderAIChips();
-    // Welcome message
-    appendAIMsg('Hej! Jeg er din ATLAS Coach. Jeg kender dit program, dine mål og dine kostbegrænsninger. Fortæl mig hvad du vil ændre — træning, mad, makros — og jeg ordner det med det samme. 💪', 'ai');
+    appendAIMsg('Hej ' + (PROF.name||'') + '! Jeg er din ATLAS Coach. Jeg kender dit program, dine mål og dine kostbegrænsninger. Fortæl mig hvad du vil ændre — træning, mad, makros — og jeg ordner det med det samme. 💪', 'ai');
   }
 }
 
@@ -2178,9 +2173,6 @@ function renderAIMsgs() {
 // ══════════════════════════════════════════════
 // HOME COACH CHATBOX
 // ══════════════════════════════════════════════
-let homeCoachHistory = [];
-let homeCoachReady = false;
-
 function initHomeCoach() {
   if (homeCoachReady) return;
   homeCoachReady = true;
